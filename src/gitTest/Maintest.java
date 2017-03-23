@@ -6,9 +6,14 @@ public class Maintest {
 
 		TestService t = new TestService();
 		try {
-			String str = null;
+			// String str = null;
 			// str = "com_address";//需要查询单个表的时候输入表名
-			t.findAll(str);
+			if (args.length == 1) {
+				t.findAll(args[0]);
+			} else {
+				t.findAll(null);
+			}
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
