@@ -1,5 +1,6 @@
 package gitTest;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -10,12 +11,18 @@ public class TestService {
 	JDBCClass jdc = new JDBCClass();
 
 	public List<TestModel> findAll(String str) throws Exception {
+		Connection conn = jdc.getConnection();
+		String sql = null;
 		PreparedStatement pstmt = null;
 		List<TestModel> list = new ArrayList<TestModel>();
 
-		String sql = "SELECT relname,reltuples FROM cpm_view";
+		sql = "CREATE OR REPLACE VIEW cpm_view AS SELECT  *   FROM (select A.relname,B.reltuples from pg_stat_user_tables A,pg_class B where A.relname=B.relname order by A.relname) a";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.executeUpdate();
+
+		sql = "SELECT relname,reltuples FROM cpm_view";
 		try {
-			pstmt = jdc.getConnection().prepareStatement(sql);
+			pstmt = conn.prepareStatement(sql);
 			if (str != null) {
 				sql = "SELECT relname,reltuples FROM cpm_view where relname = ?";
 				pstmt = jdc.getConnection().prepareStatement(sql);
