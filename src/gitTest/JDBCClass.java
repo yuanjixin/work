@@ -5,28 +5,37 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBCClass {
-	private static final String driverClassName = "org.postgresql.Driver";
-	private static final String DBURL = "jdbc:postgresql://192.168.1.250:5432/cpm_db";
-	private static final String DBUSER = "cpm";
-	private static final String DBPASS = "cpm";
 
-	// public static final String driverClassName = "com.mysql.jdbc.Driver";
-	// public static final String DBURL = "jdbc:mysql://localhost:3306/giit";
-	// public static final String DBUSER = "root";
-	// public static final String DBPASS = "1";
 	private Connection conn = null;
 
-	public JDBCClass() {
+	public JDBCClass(String driverClassName, String DBURL, String db, String DBUSER, String DBPASS) {
+
+		switch (driverClassName) {
+		case "mysql":
+			driverClassName = "com.mysql.jdbc.Driver";
+			DBURL = "jdbc:mysql://" + DBURL + ":3306/" + db;
+			break;
+
+		case "psql":
+			driverClassName = "org.postgresql.Driver";
+			DBURL = "jdbc:postgresql://" + DBURL + ":5432/" + db;
+			break;
+
+		default:
+			System.out.println("不支持此数据库");
+			break;
+		}
+
 		try {
 			Class.forName(driverClassName);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		try {
 			conn = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}
@@ -40,7 +49,7 @@ public class JDBCClass {
 			try {
 				this.conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 		}
