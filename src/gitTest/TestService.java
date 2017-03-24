@@ -10,24 +10,31 @@ public class TestService {
 
 	JDBCClass jdc = new JDBCClass();
 
+	@SuppressWarnings("resource")
 	public List<TestModel> findAll(String str) throws Exception {
 		Connection conn = jdc.getConnection();
 		String sql = null;
 		PreparedStatement pstmt = null;
 		List<TestModel> list = new ArrayList<TestModel>();
+		String driverName = conn.getMetaData().getDriverName();
 
-		sql = "CREATE OR REPLACE VIEW cpm_view AS SELECT  *   FROM (select A.relname,B.reltuples from pg_stat_user_tables A,pg_class B where A.relname=B.relname order by A.relname) a";
-		pstmt = conn.prepareStatement(sql);
-		pstmt.executeUpdate();
-
-		sql = "SELECT relname,reltuples FROM cpm_view";
 		try {
-			pstmt = conn.prepareStatement(sql);
-			if (str != null) {
-				sql = "SELECT relname,reltuples FROM cpm_view where relname = ?";
-				pstmt = jdc.getConnection().prepareStatement(sql);
-				pstmt.setString(1, str);
+			if (driverName.equals("PostgreSQL JDBC Driver")) {
+				sql = "CREATE OR REPLACE VIEW cpm_view AS SELECT  *  FROM (select A.relname,B.reltuples from pg_stat_user_tables A,pg_class B where A.relname=B.relname order by A.relname) a";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.executeUpdate();
+
+				sql = "SELECT relname,reltuples FROM cpm_view";
+				pstmt = conn.prepareStatement(sql);
+				if (str != null) {
+					sql = "SELECT relname,reltuples FROM cpm_view where relname = ?";
+					pstmt = jdc.getConnection().prepareStatement(sql);
+					pstmt.setString(1, str);
+				}
+			} else if (driverName.equals("PostgreSQL JDBC Driver")) {
+
 			}
+
 			ResultSet rs = pstmt.executeQuery();
 			Integer num1 = 0;
 			Integer num2 = 0;
@@ -54,5 +61,4 @@ public class TestService {
 		}
 		return list;
 	}
-
 }
