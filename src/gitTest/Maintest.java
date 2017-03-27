@@ -12,8 +12,8 @@ public class Maintest {
 				t.findAll(args[0], args[1], args[2], args[3], args[4], null);
 			} else {
 				System.out.println("请输入参数");
-				System.out.println("参数格式: 数据库类型   链接IP 数据库名称    用户名   密码 ");
-				System.out.println("如果需要查看单表，在最后加上表名");
+				System.out.println("参数格式: 数据库类型(mysql/psql)   链接IP 数据库名称    用户名   密码 ");
+				System.out.println("如果需要查看单表，在上述参数后面加上表名");
 			}
 
 		} catch (Exception e) {
